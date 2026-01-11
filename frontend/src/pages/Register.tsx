@@ -32,8 +32,12 @@ export function Register() {
       await register(email, password, name);
       toast.success('Account created successfully!');
       navigate('/');
-    } catch {
-      toast.error('Registration failed');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string; errors?: Array<{ msg: string }> } } };
+      const message = err.response?.data?.error
+        || err.response?.data?.errors?.[0]?.msg
+        || 'Registration failed';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

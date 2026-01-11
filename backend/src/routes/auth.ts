@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { body } from 'express-validator';
 import { register, login, getProfile, updateProfile } from '../controllers/authController';
 import { authenticate } from '../middleware/auth';
+import { validate } from '../middleware/validate';
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.post(
     body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
     body('name').notEmpty().withMessage('Name is required'),
   ],
+  validate,
   register
 );
 
@@ -21,6 +23,7 @@ router.post(
     body('email').isEmail().withMessage('Valid email required'),
     body('password').notEmpty().withMessage('Password is required'),
   ],
+  validate,
   login
 );
 

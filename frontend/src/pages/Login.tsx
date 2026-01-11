@@ -19,8 +19,10 @@ export function Login() {
       await login(email, password);
       toast.success('Welcome back!');
       navigate('/');
-    } catch {
-      toast.error('Invalid credentials');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      const message = err.response?.data?.error || err.message || 'Invalid credentials';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
