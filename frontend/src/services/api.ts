@@ -1,7 +1,8 @@
 import axios from 'axios';
 import type { User, Link, Category, AuthResponse, AdminStats } from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
+// Use same hostname as the browser, with backend port
+const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3001/api`;
 
 const api = axios.create({
   baseURL: API_URL,
