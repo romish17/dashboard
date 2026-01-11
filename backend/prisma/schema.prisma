@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  links     Link[]
+  categories Category[]
+
+  @@map("users")
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  name      String
+  color     String   @default("#3B82F6")
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  links     Link[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([name, userId])
+  @@map("categories")
+}
+
+model Link {
+  id          Int       @id @default(autoincrement())
+  title       String
+  url         String    @db.Text
+  description String?   @db.Text
+  favicon     String?
+  clicks      Int       @default(0)
+  isFavorite  Boolean   @default(false)
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("links")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
