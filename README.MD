@@ -137,6 +137,36 @@ dashboard/
 L'application inclut 32 thèmes DaisyUI:
 light, dark, cupcake, bumblebee, emerald, corporate, synthwave, retro, cyberpunk, valentine, halloween, garden, forest, aqua, lofi, pastel, fantasy, wireframe, black, luxury, dracula, cmyk, autumn, business, acid, lemonade, night, coffee, winter, dim, nord, sunset
 
+## Troubleshooting
+
+### Backend ne démarre pas (Cannot find module '/app/dist/index.js')
+
+Si le backend ne démarre pas avec cette erreur, reconstruisez les containers:
+
+```bash
+# Arrêter et supprimer les containers
+docker-compose down
+
+# Reconstruire les images sans cache
+docker-compose build --no-cache
+
+# Redémarrer les containers
+docker-compose up -d
+
+# Vérifier les logs
+docker-compose logs -f backend
+```
+
+### Réinitialiser complètement l'environnement
+
+```bash
+# Arrêter et supprimer tout (containers, volumes, images)
+docker-compose down -v
+docker-compose build --no-cache
+docker-compose up -d
+docker-compose exec backend npm run db:seed
+```
+
 ## License
 
 MIT
