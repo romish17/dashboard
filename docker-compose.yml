@@ -10,8 +10,6 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-links_dashboard}
       MYSQL_USER: ${MYSQL_USER:-links_user}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:-links_password}
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -32,8 +30,6 @@ services:
       DATABASE_URL: mysql://${MYSQL_USER:-links_user}:${MYSQL_PASSWORD:-links_password}@mysql:3306/${MYSQL_DATABASE:-links_dashboard}
       JWT_SECRET: ${JWT_SECRET:-super-secret-jwt-key-change-in-production}
       PORT: 3001
-    ports:
-      - "0.0.0.0:3001:3001"
     volumes:
       - ./backend:/app
       - /app/node_modules
@@ -49,14 +45,24 @@ services:
       dockerfile: Dockerfile
     container_name: links-frontend
     restart: unless-stopped
-    environment:
-      VITE_API_URL: http://localhost:3001/api
-    ports:
-      - "5173:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
+      - backend
+    networks:
+      - links-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: links-nginx
+    restart: unless-stopped
+    ports:
+      - "0.0.0.0:80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
       - backend
     networks:
       - links-network

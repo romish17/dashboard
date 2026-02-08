@@ -1,8 +1,8 @@
 import axios from 'axios';
 import type { User, Link, Category, AuthResponse, AdminStats } from '../types';
 
-// Use same hostname as the browser, with backend port
-const API_URL = import.meta.env.VITE_API_URL || `http://${window.location.hostname}:3001/api`;
+// Use relative URL - nginx will proxy /api to backend
+const API_URL = '/api';
 
 const api = axios.create({
   baseURL: API_URL,
